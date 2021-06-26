@@ -1,0 +1,34 @@
+import base64
+import os
+import requests
+import json
+import time
+import ntpath
+
+def upload(file_path):
+    filename = ntpath.basename(file_path).split('.')[0]
+    filetype = os.path.splitext(file_path)[-1]
+    uploadname = filename+time.strftime("%Y%m%d%H%M%S", time.localtime(time.time()))+filetype  #文件名
+    pic = open(file_path, "rb")
+    pic_base64 = base64.b64encode(pic.read()).decode('utf-8')
+    token = "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"
+    url = "https://api.github.com/repos/Upinthewindz/Mywork/contents/"+uploadname  # 用户名、库名、路径
+    headers = {"Authorization": "token " + token}
+    content = pic_base64
+    data = {
+        "message": "Upload pictures with myself",
+        "committer": {
+            "name": "Upinthewindz",
+            "email": "85999621+Upinthewindz@users.noreply.github.com"
+        },
+        "content": content
+    }
+    data = json.dumps(data)
+    req = requests.put(url=url, data=data, headers=headers)
+    req.encoding = "utf-8"
+    # re_data = json.loads(req.text)
+    # print(re_data)
+    # print(re_data['content']['sha'])
+    return "https://cdn.jsdelivr.net/gh/Upinthewindz/Mywork@master/"+uploadname
+test = upload(r'C:\Users\Upinthewindz\Desktop\rendon111.jpg')
+print(test)
